@@ -4,7 +4,7 @@ defmodule Ubuntu.MixProject do
   def project do
     [
       app: :ubuntu,
-      version: "0.1.0",
+      version: "20.4.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -21,8 +21,12 @@ defmodule Ubuntu.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.1.0", [runtime: false]},
+      {:doma_witchcraft, "~> 1.0.4-doma"},
+      {:doma_algae, "~> 1.3.1-doma"},
+      {:doma_quark, "~> 2.3.2-doma2"},
+      {:uptight, "~> 0.1.0-pre"}
     ]
   end
 end

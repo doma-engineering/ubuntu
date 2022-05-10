@@ -1,8 +1,9 @@
 defmodule UbuntuTest do
-  use ExUnit.Case
+  @moduledoc """
+  Tests for tight stuff.
+  """
+  use ExUnit.Case, async: true
+  doctest Ubuntu.Path
+  doctest Ubuntu.Command
   doctest Ubuntu
-
-  test "greets the world" do
-    assert Ubuntu.hello() == :world
-  end
 end

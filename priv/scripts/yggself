@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+read -rs _pass
+echo "$_pass" | sudo -S yggdrasilctl getSelf | grep address | cut -d\  -f3

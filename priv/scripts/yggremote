@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# dig "$1" AAAA | grep AAAA | tail -n1 | cut -f5
+dig -t AAAA +short "$1"
