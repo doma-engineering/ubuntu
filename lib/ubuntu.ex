@@ -96,7 +96,10 @@ defmodule Ubuntu do
       [%Uptight.Text{text: ~s{202:9557:aae7:88f8:cfcc:1b63:3dce:7475}}]
   """
   @spec run!(Ubuntu.t(), Uptight.Text.t()) :: Ubuntu.ResponseRun.t()
-  def run!(%Ubuntu{command: command, read: read, timeout: timeout}, stdin = %T{} \\ %T{text: ""}) do
+  def run!(
+        %Ubuntu{command: command, read: read, timeout: timeout} = u,
+        stdin = %T{} \\ %T{text: ""}
+      ) do
     ## Maybe some day we'll have something like "run_task" or something.
     ## Relevant reading: https://www.theerlangelist.com/article/spawn_or_not
     ##
@@ -118,13 +121,25 @@ defmodule Ubuntu do
           IO.read(:line) |> String.trim() |> T.new!()
       end
 
-    p =
-      Port.open(
-        {:spawn_executable, command.path |> Ubuntu.Path.render() |> T.un()},
-        [:binary, args: command.args |> map(&T.un/1)]
-      )
+    p = open_port(u)
 
     Port.command(p, (stdin |> T.un()) <> "\n")
+
+    res = naive_run_receive_loop(Resp.new!(p, []), command, timeout)
+
+    try do
+      Port.close(p)
+    rescue
+      # I meaaaan
+      _ -> :ok
+    end
+
+    res
+  end
+
+  @spec open_port(Ubuntu.t()) :: any()
+  def open_port_with_timeout(%Ubuntu{command: command, timeout: timeout} = ubuntu) do
+    port = open_port(ubuntu)
 
     res = naive_run_receive_loop(Resp.new!(p, []), command, timeout)
 
@@ -179,5 +194,13 @@ defmodule Ubuntu do
      |> Ubuntu.new!()
      |> Ubuntu.run!()).data
     |> hd()
+  end
+
+  @spec open_port(Ubuntu.t()) :: port()
+  defp open_port(%Ubuntu{command: command}) do
+    Port.open(
+      {:spawn_executable, command.path |> Ubuntu.Path.render() |> T.un()},
+      [:binary, args: command.args |> map(&T.un/1)]
+    )
   end
 end
