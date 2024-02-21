@@ -22,7 +22,7 @@ defmodule Ubuntu.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4", [runtime: false]},
+      {:dialyxir, "~> 1.4", only: [:dev], [runtime: false]},
       {:uptight, github: "doma-engineering/uptight", branch: "main"},
       {:quark_goo, github: "doma-engineering/quark-goo", branch: "main"},
       {:algae_goo, github: "doma-engineering/algae-goo", branch: "main"},
